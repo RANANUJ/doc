@@ -9,6 +9,7 @@ import 'package:doc/models/product.dart' as models;
 import '../product_detail/product_detail_screen.dart';
 
 import 'saved_screen.dart';
+import '../profile/profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -74,39 +75,41 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       backgroundColor: Colors.grey[50],
-      appBar: AppBar(
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Hello, ${user?.displayName?.split(' ')[0] ?? 'User'}',
-              style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold),
-            ),
-            const Text(
-              'Solve your beauty concerns',
-              style: TextStyle(fontSize: 14, color: Colors.white70),
-            ),
-          ],
-        ),
-        backgroundColor: Colors.orange,
-        elevation: 0,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.shopping_cart, color: Colors.white),
-            onPressed: () {},
-          ),
-          IconButton(
-            icon: const Icon(Icons.logout, color: Colors.white),
-            onPressed: () async {
-              await FirebaseAuth.instance.signOut();
-              Navigator.pushReplacementNamed(context, '/login');
-            },
-          ),
-        ],
-      ),
+      appBar: _currentIndex == 0
+          ? AppBar(
+              title: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Hello, ${user?.displayName?.split(' ')[0] ?? 'User'}',
+                    style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  const Text(
+                    'Solve your beauty concerns',
+                    style: TextStyle(fontSize: 14, color: Colors.white70),
+                  ),
+                ],
+              ),
+              backgroundColor: Colors.orange,
+              elevation: 0,
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.shopping_cart, color: Colors.white),
+                  onPressed: () {},
+                ),
+                IconButton(
+                  icon: const Icon(Icons.logout, color: Colors.white),
+                  onPressed: () async {
+                    await FirebaseAuth.instance.signOut();
+                    Navigator.pushReplacementNamed(context, '/login');
+                  },
+                ),
+              ],
+            )
+          : null,
       body: _currentIndex == 0
           ? _buildHomeContent(size)
           : _currentIndex == 2
@@ -120,7 +123,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     });
                   },
                 )
-              : Center(child: Text('Page ${_currentIndex + 1}')),
+              : _currentIndex == 3
+                  ? const ProfileScreen()
+                  : Center(child: Text('Page ${_currentIndex + 1}')),
       bottomNavigationBar: _buildBottomNavigationBar(),
     );
   }
